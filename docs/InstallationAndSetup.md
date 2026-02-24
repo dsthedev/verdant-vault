@@ -229,6 +229,155 @@ passwordValidation: (password) => {
 
 ## Actually Send Emails
 
-There isn't much point in requiring user's to login with a valid email if they can't send themselves a forgot password link. Or if you want to send them something in the future like to validate email or send an invoice.
+**Setup:**
 
-`coming soon!`
+```sh
+yarn cedar setup mailer
+```
+
+**Step 1: Configure Mailer** (`api/src/lib/mailer.ts`)
+
+```ts
+import { Mailer } from '@cedarjs/mailer-core'
+import { NodemailerMailHandler } from '@cedarjs/mailer-handler-nodemailer'
+import { ReactEmailRenderer } from '@cedarjs/mailer-renderer-react-email'
+import { logger } from 'src/lib/logger'
+
+export const mailer = new Mailer({
+  handling: {
+    handlers: {
+      nodemailer: new NodemailerMailHandler({
+        transport: {
+          host: process.env.BREVO_SMTP_URL,
+          port: parseInt(process.env.BREVO_SMTP_PORT || '587'),
+          secure: false,
+          auth: {
+            user: process.env.BREVO_SENDER_EMAIL,
+            pass: process.env.BREVO_SMTP_KEY,
+          },
+        },
+      }),
+    },
+    default: 'nodemailer',
+  },
+  rendering: {
+    renderers: { reactEmail: new ReactEmailRenderer() },
+    default: 'reactEmail',
+  },
+  defaults: {
+    from: `${process.env.BREVO_SENDER_NAME} <${process.env.BREVO_SENDER_EMAIL}>`,
+  },
+  development: {
+    handler: 'nodemailer',
+  },
+  logger,
+})
+```
+
+**Step 2: Create Email Template** (`api/src/mail/ForgotPasswordEmail.tsx`)
+
+```tsx
+import React from 'react'
+import {
+  Html, Text, Hr, Body, Head, Tailwind, Preview,
+  Container, Heading, Button,
+} from '@react-email/components'
+
+interface ForgotPasswordEmailProps {
+  resetLink: string
+}
+
+export function ForgotPasswordEmail({ resetLink }: ForgotPasswordEmailProps) {
+  return (
+    <Html lang="en">
+      <Head />
+      <Preview>Reset your Verdant Vault password</Preview>
+      <Tailwind>
+        <Body className="mx-auto my-auto bg-white font-sans">
+          <Container className="mx-auto my-[40px] rounded border border-solid border-gray-200 p-[20px]">
+            <Heading className="mx-0 my-[30px] p-0 text-center text-[24px] font-normal text-black">
+              Reset Your Password
+            </Heading>
+            <Text className="text-[14px] leading-[24px] text-black">
+              Click the link below to reset your password (expires in 24 hours).
+            </Text>
+            <div className="my-[30px] text-center">
+              <Button
+                href={resetLink}
+                className="rounded bg-blue-600 px-4 py-2 text-center text-[14px] font-semibold text-white"
+              >
+                Reset Password
+              </Button>
+            </div>
+            <Text className="text-[12px] leading-[24px] text-blue-600 break-all">
+              {resetLink}
+            </Text>
+            <Hr className="mx-0 my-[26px] w-full border border-solid border-[#eaeaea]" />
+            <Text className="text-[12px] leading-[24px] text-[#666666]">
+              If you didn't request this, ignore this email.
+            </Text>
+          </Container>
+        </Body>
+      </Tailwind>
+    </Html>
+  )
+}
+```
+
+**Step 3: Update Auth Handler** (`api/src/functions/auth.ts`)
+
+```ts
+import { mailer } from 'src/lib/mailer'
+import { ForgotPasswordEmail } from 'src/mail/ForgotPasswordEmail'
+
+// In forgotPassword handler:
+handler: async (user, resetToken) => {
+  const resetLink = `${process.env.WEB_URL}/reset-password?resetToken=${resetToken}`
+  await mailer.send(ForgotPasswordEmail({ resetLink }), {
+    to: user.email,
+    subject: 'Reset Your Verdant Vault Password',
+  })
+  return user
+},
+```
+
+**Step 4: Fix Async Form Handlers** (`web/src/pages/ForgotPasswordPage/ForgotPasswordPage.tsx`)
+
+```tsx
+import { useTransition } from 'react'
+
+const ForgotPasswordPage = () => {
+  const { isAuthenticated, forgotPassword } = useAuth()
+  const [_isPending, startTransition] = useTransition()
+
+  const onSubmit = async (data: { email: string }) => {
+    startTransition(async () => {
+      const response = await forgotPassword(data.email)
+      if (response.error) {
+        toast.error(response.error)
+      } else {
+        toast.success('Password reset link sent to ' + response.email)
+        navigate(routes.login())
+      }
+    })
+  }
+  // ... rest of component
+}
+```
+
+Apply same pattern to `SignupPage` and `LoginPage` `onSubmit` handlers.
+
+**Step 5: Add Environment Variables** (`.env`)
+
+```env
+BREVO_SMTP_URL=smtp-relay.brevo.com
+BREVO_SMTP_PORT=587
+BREVO_SENDER_EMAIL=your-email@example.com
+BREVO_SENDER_NAME=Verdant Vault
+BREVO_SMTP_KEY=your-brevo-smtp-key
+WEB_URL=http://localhost:8910
+```
+
+For production, update `WEB_URL` to your deployed domain.
+
+**Note:** By default brevo will not respect your from address on a free account / plan. It's not production ready!

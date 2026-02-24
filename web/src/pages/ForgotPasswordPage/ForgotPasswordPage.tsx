@@ -1,4 +1,6 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useTransition } from 'react'
+
+import { validateEmail } from 'api/src/lib/validation'
 
 import { Form, Label, TextField, Submit, FieldError } from '@cedarjs/forms'
 import { navigate, routes } from '@cedarjs/router'
@@ -6,10 +8,10 @@ import { Metadata } from '@cedarjs/web'
 import { toast, Toaster } from '@cedarjs/web/toast'
 
 import { useAuth } from 'src/auth'
-import { validateEmail } from 'api/src/lib/validation'
 
 const ForgotPasswordPage = () => {
   const { isAuthenticated, forgotPassword } = useAuth()
+  const [isPending, startTransition] = useTransition()
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -23,19 +25,18 @@ const ForgotPasswordPage = () => {
   }, [])
 
   const onSubmit = async (data: { email: string }) => {
-    const response = await forgotPassword(data.email)
+    startTransition(async () => {
+      const response = await forgotPassword(data.email)
 
-    if (response.error) {
-      toast.error(response.error)
-    } else {
-      // The function `forgotPassword.handler` in api/src/functions/auth.js has
-      // been invoked, let the user know how to get the link to reset their
-      // password (sent in email, perhaps?)
-      toast.success(
-        'A link to reset your password was sent to ' + response.email
-      )
-      navigate(routes.login())
-    }
+      if (response.error) {
+        toast.error(response.error)
+      } else {
+        toast.success(
+          'A link to reset your password was sent to ' + response.email
+        )
+        navigate(routes.login())
+      }
+    })
   }
 
   return (

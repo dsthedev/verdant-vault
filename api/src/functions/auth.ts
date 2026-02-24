@@ -8,7 +8,9 @@ import type { DbAuthHandlerOptions, UserType } from '@cedarjs/auth-dbauth-api'
 
 import { cookieName } from 'src/lib/auth'
 import { db } from 'src/lib/db'
+import { mailer } from 'src/lib/mailer'
 import { validateEmail, validatePassword } from 'src/lib/validation'
+import { ForgotPasswordEmail } from 'src/mail/ForgotPasswordEmail'
 
 export const handler = async (
   event: APIGatewayProxyEvent,
@@ -29,13 +31,14 @@ export const handler = async (
     // so don't include anything you wouldn't want prying eyes to see. The
     // `user` here has been sanitized to only include the fields listed in
     // `allowedUserFields` so it should be safe to return as-is.
-    handler: (user, _resetToken) => {
-      // TODO: Send an email/message to the user
-      // The message should include a link to reset their password with the
-      // `resetToken`. The URL should look something like:
-      // `http://localhost:8910/reset-password?resetToken=${resetToken}`
-      // When you implement this, change `_resetToken` to `resetToken` in the
-      // function arguments above.
+    handler: async (user, resetToken) => {
+      // Send password reset email
+      const resetLink = `${process.env.WEB_URL}/reset-password?resetToken=${resetToken}`
+
+      await mailer.send(ForgotPasswordEmail({ resetLink }), {
+        to: user.email,
+        subject: 'Reset Your Verdant Vault Password',
+      })
 
       return user
     },

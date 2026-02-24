@@ -9,6 +9,8 @@
     "@cedarjs/core": "2.6.0",
     "@cedarjs/eslint-config": "2.6.0",
     "@cedarjs/project-config": "2.6.0",
+    "@cedarjs/realtime": "2.6.0",
+    "@cedarjs/studio": "2",
     "@cedarjs/testing": "2.6.0"
   },
   "engines": {
