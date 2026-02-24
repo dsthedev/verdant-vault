@@ -1,6 +1,12 @@
 import { useEffect, useRef } from 'react'
 
 import {
+  validateEmail,
+  validatePassword,
+  getPasswordStrengthMessage,
+} from 'api/src/lib/validation'
+
+import {
   Form,
   Label,
   TextField,
@@ -77,6 +83,10 @@ const SignupPage = () => {
                         value: true,
                         message: 'Email is required',
                       },
+                      validate: (value) => {
+                        const validation = validateEmail(value)
+                        return validation.valid || validation.error
+                      },
                     }}
                   />
                   <FieldError name="email" className="rw-field-error" />
@@ -98,9 +108,16 @@ const SignupPage = () => {
                         value: true,
                         message: 'Password is required',
                       },
+                      validate: (value) => {
+                        const validation = validatePassword(value)
+                        return validation.valid || validation.error
+                      },
                     }}
                   />
                   <FieldError name="password" className="rw-field-error" />
+                  <p className="text-sm text-gray-600 mt-1">
+                    {getPasswordStrengthMessage()}
+                  </p>
 
                   <div className="rw-button-group">
                     <Submit className="rw-button rw-button-blue">

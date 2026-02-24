@@ -203,9 +203,27 @@ And don't forget, now you can wrap pages in a private set and send unauthenticat
 
 ### Enforce Valid Email & Strong Password
 
-Enforce good User practices like valid email and strong passwords.
+To enforce valid emails and strong passwords, create shared validation utilities that both the API and web sides can use:
 
-`coming soon!`
+**Step 1:** Create `api/src/lib/validation.ts` with email and password validation functions.
+
+**Step 2:** Update `api/src/functions/auth.ts` to import and use password validation in the `validateEmail` (handler) & `passwordValidation` functions during signup:
+
+```tsx
+passwordValidation: (password) => {
+  const validation = validatePassword(password)
+  if (!validation.valid) {
+    throw new PasswordValidationError(validation.error)
+  }
+  return true
+},
+```
+
+**Step 3:** Update auth forms (`SignupPage`, `LoginPage`, `ForgotPasswordPage`) to import the validators from `api/src/lib/validation` and add them to the `validate` property in field validation.
+
+**Why this approach?** The validation logic lives in the API folder so both sides can import it—ensuring consistency between client and server validation. Server-side password validation provides security (never trust client input), while client-side validation provides immediate user feedback for better UX.
+
+**Password requirements:** 8+ characters, uppercase, lowercase, number, and special character.
 
 ---
 

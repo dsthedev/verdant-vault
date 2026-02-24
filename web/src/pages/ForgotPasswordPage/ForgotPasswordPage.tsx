@@ -6,6 +6,7 @@ import { Metadata } from '@cedarjs/web'
 import { toast, Toaster } from '@cedarjs/web/toast'
 
 import { useAuth } from 'src/auth'
+import { validateEmail } from 'api/src/lib/validation'
 
 const ForgotPasswordPage = () => {
   const { isAuthenticated, forgotPassword } = useAuth()
@@ -71,6 +72,10 @@ const ForgotPasswordPage = () => {
                         required: {
                           value: true,
                           message: 'Email is required',
+                        },
+                        validate: (value) => {
+                          const validation = validateEmail(value)
+                          return validation.valid || validation.error
                         },
                       }}
                     />

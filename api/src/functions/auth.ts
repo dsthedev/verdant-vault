@@ -1,10 +1,14 @@
 import type { APIGatewayProxyEvent, Context } from 'aws-lambda'
 
-import { DbAuthHandler } from '@cedarjs/auth-dbauth-api'
+import {
+  DbAuthHandler,
+  PasswordValidationError,
+} from '@cedarjs/auth-dbauth-api'
 import type { DbAuthHandlerOptions, UserType } from '@cedarjs/auth-dbauth-api'
 
 import { cookieName } from 'src/lib/auth'
 import { db } from 'src/lib/db'
+import { validateEmail, validatePassword } from 'src/lib/validation'
 
 export const handler = async (
   event: APIGatewayProxyEvent,
@@ -131,6 +135,12 @@ export const handler = async (
       salt,
       userAttributes: _userAttributes,
     }) => {
+      // Validate email format before creating user
+      const emailValidation = validateEmail(username)
+      if (!emailValidation.valid) {
+        throw new Error(emailValidation.error)
+      }
+
       return db.user.create({
         data: {
           email: username,
@@ -144,7 +154,11 @@ export const handler = async (
     // Include any format checks for password here. Return `true` if the
     // password is valid, otherwise throw a `PasswordValidationError`.
     // Import the error along with `DbAuthHandler` from `@cedarjs/api` above.
-    passwordValidation: (_password) => {
+    passwordValidation: (password) => {
+      const validation = validatePassword(password)
+      if (!validation.valid) {
+        throw new PasswordValidationError(validation.error)
+      }
       return true
     },
 
