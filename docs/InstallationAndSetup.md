@@ -381,3 +381,16 @@ WEB_URL=http://localhost:8910
 For production, update `WEB_URL` to your deployed domain.
 
 **Note:** By default brevo will not respect your from address on a free account / plan. It's not production ready!
+
+---
+
+## Deploy to Netlify
+
+Sure there are other hosts, but Netlify is great.
+
+1. Push the repo to github or gitlab.
+2. Locally, run `cjs setup deploy netlify`
+3. Link the project to Netlify
+  - Make sure to bulk add all the env var's as secret!
+
+is
