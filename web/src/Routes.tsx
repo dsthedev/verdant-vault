@@ -7,11 +7,18 @@
 // 'src/pages/HomePage/HomePage.js'         -> HomePage
 // 'src/pages/Admin/BooksPage/BooksPage.js' -> AdminBooksPage
 
-import { Router, Route } from '@cedarjs/router'
+import { Router, Route, Set } from '@cedarjs/router'
+
+import DefaultLayout from './layouts/DefaultLayout/DefaultLayout'
 
 const Routes = () => {
   return (
     <Router>
+      <Set wrap={DefaultLayout}>
+        <Route path="/dashboard" page={DashboardPage} name="dashboard" />
+        <Route path="/" page={HomePage} name="home" />
+      </Set>
+
       <Route notfound page={NotFoundPage} />
     </Router>
   )
