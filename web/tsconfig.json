@@ -13,6 +13,7 @@
       "../api/src",
       "../.redwood/types/mirror/api/src"
     ],
+    "baseUrl": ".",
     "paths": {
       "src/*": [
         "./src/*",
@@ -22,7 +23,8 @@
       ],
       "$api/*": ["../api/*"],
       "types/*": ["./types/*", "../types/*"],
-      "@cedarjs/testing": ["../node_modules/@cedarjs/testing/web"]
+      "@cedarjs/testing": ["../node_modules/@cedarjs/testing/web"],
+      "@/*": ["./src/*"]
     },
     "typeRoots": [
       "../node_modules/@types",

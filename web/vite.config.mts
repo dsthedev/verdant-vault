@@ -1,5 +1,7 @@
 import dns from 'dns'
+import path from 'path'
 
+import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
 
 import { cedar } from '@cedarjs/vite'
@@ -9,5 +11,10 @@ import { cedar } from '@cedarjs/vite'
 dns.setDefaultResultOrder('verbatim')
 
 export default defineConfig({
-  plugins: [cedar()],
+  plugins: [cedar(), tailwindcss()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
 })
