@@ -386,4 +386,4 @@ Sure there are other hosts, but Netlify is great.
 3. Link the project to Netlify
   - Make sure to bulk add all the env var's as secret!
 
-is
+Seems like everything just works :shrug:
