@@ -1,7 +1,8 @@
-import { Menu } from 'lucide-react'
+import { LogOut, Menu } from 'lucide-react'
 
 import { Link, routes } from '@cedarjs/router'
 
+import { useAuth } from 'src/auth'
 import {
   Menubar,
   MenubarContent,
@@ -15,6 +16,14 @@ type DefaultLayoutProps = {
 }
 
 const DefaultLayout = ({ children }: DefaultLayoutProps) => {
+  const { isAuthenticated, logOut } = useAuth()
+
+  const menuItems = [
+    { label: 'Login', to: routes.login() },
+    { label: 'Signup', to: routes.signup() },
+  ]
+  const userMenuItems = [{ label: 'Dashboard', to: routes.dashboard() }]
+
   return (
     <>
       <header>
@@ -31,9 +40,29 @@ const DefaultLayout = ({ children }: DefaultLayoutProps) => {
                 </MenubarTrigger>
 
                 <MenubarContent align="end">
-                  <MenubarItem asChild>
-                    <Link to={routes.dashboard()}>Dashboard</Link>
-                  </MenubarItem>
+                  {isAuthenticated ? (
+                    <>
+                      {userMenuItems.map((item) => (
+                        <MenubarItem key={item.label} asChild>
+                          <Link to={item.to}>{item.label}</Link>
+                        </MenubarItem>
+                      ))}
+                      <MenubarItem asChild>
+                        <button className="justify-start" onClick={logOut}>
+                          <LogOut />
+                          Logout
+                        </button>
+                      </MenubarItem>
+                    </>
+                  ) : (
+                    <>
+                      {menuItems.map((item) => (
+                        <MenubarItem key={item.label} asChild>
+                          <Link to={item.to}>{item.label}</Link>
+                        </MenubarItem>
+                      ))}
+                    </>
+                  )}
                 </MenubarContent>
               </MenubarMenu>
             </Menubar>

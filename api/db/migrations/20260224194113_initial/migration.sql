@@ -1,0 +1,18 @@
+-- CreateTable
+CREATE TABLE "User" (
+    "id" SERIAL NOT NULL,
+    "email" TEXT NOT NULL,
+    "name" TEXT,
+    "hashedPassword" TEXT NOT NULL DEFAULT '',
+    "salt" TEXT NOT NULL DEFAULT '',
+    "resetToken" TEXT,
+    "resetTokenExpiresAt" TIMESTAMP(3),
+    "roles" TEXT NOT NULL DEFAULT 'guest',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");

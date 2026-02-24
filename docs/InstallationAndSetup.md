@@ -53,6 +53,8 @@ import DefaultLayout from './layouts/DefaultLayout/DefaultLayout'
 
 The reason for adding a default layout first is to get a basic nav working using the `Link and routes` from the `@cedarjs/router` package.
 
+---
+
 ## ShadCN and Tailwind
 
 There are a million options for UI, but I'm currently favoring the ShadCn and Tailwind "way".
@@ -143,6 +145,72 @@ And a menubar to the default layout like this:
 
 If everything is working, There should be a functional shadcn menubar, and some clickable buttons, all relying on TailwindCSS. Sweet.
 
+---
+
 ## dbAuth & User System
 
-Connect a database. Setup dbAuth. Enforce good User practices.
+Ensure you have a local postgres db running, with a user assigned to it, and managed with a tool like TablePlus. The connection string will look something like this:
+
+```env
+DATABASE_URL=postgresql://user:password@localhost:1234/dbname
+TEST_DATABASE_URL=postgresql://user:password@localhost:1234/dbnametest
+```
+
+Then, CedarJS has scaffolding to get started with an in-house auth system:
+
+```sh
+cjs setup auth dbAuth &&
+cjs prisma migrate dev
+```
+
+With a very basic user flow working, I recommend altering the main menu to handle the login/logout process something like this:
+
+```tsx
+<MenubarContent align="end">
+  {isAuthenticated ? (
+    <>
+      {userMenuItems.map((item) => (
+        <MenubarItem key={item.label} asChild>
+          <Link to={item.to}>{item.label}</Link>
+        </MenubarItem>
+      ))}
+      <MenubarItem asChild>
+        <button className="justify-start" onClick={logOut}>
+          <LogOut />
+          Logout
+        </button>
+      </MenubarItem>
+    </>
+  ) : (
+    <>
+      {menuItems.map((item) => (
+        <MenubarItem key={item.label} asChild>
+          <Link to={item.to}>{item.label}</Link>
+        </MenubarItem>
+      ))}
+    </>
+  )}
+</MenubarContent>
+```
+
+And don't forget, now you can wrap pages in a private set and send unauthenticated users to the login page:
+
+```tsx
+<PrivateSet wrap={DefaultLayout} unauthenticated="login" roles={['guest']}>
+  <Route path="/dashboard" page={DashboardPage} name="dashboard" />
+</PrivateSet>
+```
+
+### Enforce Valid Email & Strong Password
+
+Enforce good User practices like valid email and strong passwords.
+
+`coming soon!`
+
+---
+
+## Actually Send Emails
+
+There isn't much point in requiring user's to login with a valid email if they can't send themselves a forgot password link. Or if you want to send them something in the future like to validate email or send an invoice.
+
+`coming soon!`
