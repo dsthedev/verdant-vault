@@ -369,14 +369,7 @@ Apply same pattern to `SignupPage` and `LoginPage` `onSubmit` handlers.
 
 **Step 5: Add Environment Variables** (`.env`)
 
-```env
-BREVO_SMTP_URL=smtp-relay.brevo.com
-BREVO_SMTP_PORT=587
-BREVO_SENDER_EMAIL=your-email@example.com
-BREVO_SENDER_NAME=Verdant Vault
-BREVO_SMTP_KEY=your-brevo-smtp-key
-WEB_URL=http://localhost:8910
-```
+See `.env.example`
 
 For production, update `WEB_URL` to your deployed domain.
 
