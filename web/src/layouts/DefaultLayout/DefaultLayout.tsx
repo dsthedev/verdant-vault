@@ -24,7 +24,7 @@ const DefaultLayout = ({ children }: DefaultLayoutProps) => {
     { label: 'Signup', to: routes.signup() },
   ]
   const userMenuItems = [
-    { label: 'Dashboard', to: routes.dashboard() },
+    // { label: 'Dashboard', to: routes.dashboard() },
     { label: 'Locations', to: routes.locations() },
   ]
 
@@ -52,7 +52,7 @@ const DefaultLayout = ({ children }: DefaultLayoutProps) => {
                         </MenubarItem>
                       ))}
                       <MenubarItem asChild>
-                        <button className="justify-start" onClick={logOut}>
+                        <button className="w-full" onClick={logOut}>
                           <LogOut />
                           Logout
                         </button>
@@ -74,12 +74,14 @@ const DefaultLayout = ({ children }: DefaultLayoutProps) => {
         </div>
       </header>
 
-      <main className="max-w-2xl mx-auto px-4">{children}</main>
+      <main className="max-w-2xl mx-auto px-4 my-4">{children}</main>
 
-      <footer>
-        <div className="max-w-2xl mx-auto px-4 py-6">
+      <footer className="my-8">
+        <div className="flex items-center justify-center max-w-2xl mx-auto px-4 py-6 gap-4 flex-col md:flex-row">
+          <span className="flex md:order-last">
+            &copy; {new Date().getFullYear()} Verdant Vault
+          </span>
           <ModeCycle></ModeCycle>
-          <span>&copy; {new Date().getFullYear()} Verdant Vault</span>
         </div>
       </footer>
     </>

@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react'
 
+import { validateEmail } from 'api/src/lib/validation'
+
 import {
   Form,
   Label,
@@ -13,7 +15,6 @@ import { Metadata } from '@cedarjs/web'
 import { toast, Toaster } from '@cedarjs/web/toast'
 
 import { useAuth } from 'src/auth'
-import { validateEmail } from 'api/src/lib/validation'
 
 const LoginPage = () => {
   const { isAuthenticated, logIn } = useAuth()

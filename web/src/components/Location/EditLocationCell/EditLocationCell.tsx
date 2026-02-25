@@ -79,7 +79,7 @@ export const Success = ({ location }: CellSuccessProps<EditLocationById>) => {
     <div className="rw-segment">
       <header className="rw-segment-header">
         <h2 className="rw-heading rw-heading-secondary">
-          Edit Location {location?.id}
+          Editing <strong className="text-xl">{location?.name}</strong>
         </h2>
       </header>
       <div className="rw-segment-main">

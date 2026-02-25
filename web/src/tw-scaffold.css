@@ -1,0 +1,78 @@
+@reference "tailwindcss"
+
+/* Scaffold Layout Styles */
+.rw-scaffold {
+  @apply container mx-auto px-4 py-6;
+}
+
+.rw-segment-header {
+  @apply text-center;
+}
+
+.rw-header {
+  @apply w-full flex items-center justify-between mb-6 pb-4 border-b;
+}
+
+.rw-heading {
+  @apply font-semibold;
+}
+
+.rw-heading-primary {
+  @apply text-gray-900 dark:text-gray-100;
+}
+
+.rw-link {
+  @apply text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 no-underline;
+}
+
+.rw-button {
+  @apply inline-flex items-center gap-2 px-4 py-2 rounded-md font-medium text-sm transition-colors;
+}
+
+.rw-button-green {
+  @apply bg-green-600 text-white hover:bg-green-700 active:bg-green-800;
+}
+
+.rw-button-icon {
+  @apply text-xl font-bold;
+}
+
+.rw-main {
+  @apply mt-6;
+}
+
+.rw-toast {
+  @apply bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700;
+}
+
+.rw-login-link {
+  @apply my-4 text-center;
+}
+
+/* Form Element Styles */
+form.rw-form-wrapper {
+  @apply max-w-md mx-auto p-6 rounded-lg shadow-md;
+}
+.rw-label {
+  @apply block text-sm font-medium mb-1;
+}
+
+.rw-label-error {
+  @apply text-red-600;
+}
+
+.rw-input {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+}
+
+.rw-input-error {
+  @apply border-red-500 focus:ring-red-500 focus:border-red-500;
+}
+
+.rw-field-error {
+  @apply block text-sm text-red-600 mt-1;
+}
+
+.rw-button-blue {
+  @apply px-8 my-4 text-xl bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800;
+}

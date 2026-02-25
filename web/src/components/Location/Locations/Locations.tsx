@@ -10,12 +10,23 @@ import type { TypedDocumentNode } from '@cedarjs/web'
 import { toast } from '@cedarjs/web/toast'
 
 import { QUERY } from 'src/components/Location/LocationsCell'
+import { Badge } from 'src/components/ui/badge'
+import { Button } from 'src/components/ui/button'
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  // ItemMedia,
+  ItemTitle,
+} from 'src/components/ui/item'
 import {
   checkboxInputTag,
   formatEnum,
   timeTag,
   truncate,
 } from 'src/lib/formatters.js'
+import { getLocationTypeVariant, uppercaseFirst } from 'src/lib/utils'
 
 const DELETE_LOCATION_MUTATION: TypedDocumentNode<
   DeleteLocationMutation,
@@ -36,76 +47,85 @@ const LocationsList = ({ locations }: FindLocations) => {
     onError: (error) => {
       toast.error(error.message)
     },
-    // This refetches the query on the list page. Read more about other ways to
-    // update the cache over here:
-    // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
     refetchQueries: [{ query: QUERY }],
     awaitRefetchQueries: true,
   })
 
-  const onDeleteClick = (id: DeleteLocationMutationVariables['id']) => {
-    if (confirm('Are you sure you want to delete location ' + id + '?')) {
-      deleteLocation({ variables: { id } })
+  const onDeleteClick = (location: (typeof locations)[0]) => {
+    if (
+      confirm('Delete Location: ' + location.name + ' / ' + location.type + '?')
+    ) {
+      deleteLocation({ variables: { id: location.id } })
     }
   }
 
+  const activeLocations = locations.filter((loc) => loc.isActive)
+  const inactiveLocations = locations.filter((loc) => !loc.isActive)
+
+  const LocationItem = ({
+    location,
+    muted = false,
+  }: {
+    location: (typeof locations)[0]
+    muted?: boolean
+  }) => (
+    <Item key={location.id} variant={muted ? 'muted' : 'default'}>
+      <ItemContent>
+        <ItemTitle className="flex items-center gap-2 text-xl">
+          {truncate(uppercaseFirst(location.name))}
+          <Badge variant={getLocationTypeVariant(location.type)}>
+            {formatEnum(location.type)}
+          </Badge>
+        </ItemTitle>
+        <ItemDescription>
+          {truncate(uppercaseFirst(location.description))}
+        </ItemDescription>
+      </ItemContent>
+      <ItemActions>
+        <Button asChild variant="blue" size="sm">
+          <Link
+            to={routes.editLocation({ id: location.id })}
+            title={'Edit location ' + location.id}
+          >
+            Edit
+          </Link>
+        </Button>
+        <Button
+          variant="destructive"
+          size="sm"
+          onClick={() => onDeleteClick(location)}
+        >
+          Delete
+        </Button>
+      </ItemActions>
+    </Item>
+  )
+
   return (
-    <div className="rw-segment rw-table-wrapper-responsive">
-      <table className="rw-table">
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Description</th>
-            <th>Is active</th>
-            <th>Created by id</th>
-            <th>Created at</th>
-            <th>Updated at</th>
-            <th>&nbsp;</th>
-          </tr>
-        </thead>
-        <tbody>
-          {locations.map((location) => (
-            <tr key={location.id}>
-              <td>{truncate(location.id)}</td>
-              <td>{truncate(location.name)}</td>
-              <td>{formatEnum(location.type)}</td>
-              <td>{truncate(location.description)}</td>
-              <td>{checkboxInputTag(location.isActive)}</td>
-              <td>{truncate(location.createdById)}</td>
-              <td>{timeTag(location.createdAt)}</td>
-              <td>{timeTag(location.updatedAt)}</td>
-              <td>
-                <nav className="rw-table-actions">
-                  <Link
-                    to={routes.location({ id: location.id })}
-                    title={'Show location ' + location.id + ' detail'}
-                    className="rw-button rw-button-small"
-                  >
-                    Show
-                  </Link>
-                  <Link
-                    to={routes.editLocation({ id: location.id })}
-                    title={'Edit location ' + location.id}
-                    className="rw-button rw-button-small rw-button-blue"
-                  >
-                    Edit
-                  </Link>
-                  <button
-                    type="button"
-                    title={'Delete location ' + location.id}
-                    className="rw-button rw-button-small rw-button-red"
-                    onClick={() => onDeleteClick(location.id)}
-                  >
-                    Delete
-                  </button>
-                </nav>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="space-y-8">
+      {/* Active Locations */}
+      {activeLocations.length > 0 && (
+        <div className="rw-segment">
+          <h2 className="text-lg font-semibold mb-4">Active Locations</h2>
+          <div className="space-y-2">
+            {activeLocations.map((location) => (
+              <LocationItem key={location.id} location={location} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Inactive Locations */}
+      {inactiveLocations.length > 0 && (
+        <div className="rw-segment">
+          <h2 className="text-lg font-semibold mb-4">Inactive Locations</h2>
+          <div className="space-y-2">
+            {inactiveLocations.map((location) => (
+              <LocationItem key={location.id} location={location} muted />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

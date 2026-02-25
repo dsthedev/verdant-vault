@@ -8,6 +8,14 @@ import type {
 } from '@cedarjs/web'
 
 import Locations from 'src/components/Location/Locations'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from 'src/components/ui/card'
 
 export const QUERY: TypedDocumentNode<FindLocations, FindLocationsVariables> =
   gql`
@@ -29,12 +37,29 @@ export const Loading = () => <div>Loading...</div>
 
 export const Empty = () => {
   return (
-    <div className="rw-text-center">
-      No locations yet.{' '}
-      <Link to={routes.newLocation()} className="rw-link">
-        Create one?
-      </Link>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>No Locations Yet</CardTitle>
+        <CardDescription>
+          Locations are labeled containers and designated places where your
+          plants are stored and organized.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm text-muted-foreground">
+          Create your first location to start organizing your plant collection.
+          Examples include greenhouses, shelves, rooms, or outdoor garden beds.
+        </p>
+      </CardContent>
+      <CardFooter>
+        <Link
+          to={routes.newLocation()}
+          className="rw-button rw-button-green text-sm"
+        >
+          <div className="rw-button-icon">+</div> New Location
+        </Link>
+      </CardFooter>
+    </Card>
   )
 }
 
