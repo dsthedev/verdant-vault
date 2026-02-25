@@ -10,6 +10,7 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from 'src/components/ui/menubar'
+import { ModeCycle } from 'src/components/ui/mode-cycle'
 
 type DefaultLayoutProps = {
   children?: React.ReactNode
@@ -77,6 +78,7 @@ const DefaultLayout = ({ children }: DefaultLayoutProps) => {
 
       <footer>
         <div className="max-w-2xl mx-auto px-4 py-6">
+          <ModeCycle></ModeCycle>
           <span>&copy; {new Date().getFullYear()} Verdant Vault</span>
         </div>
       </footer>

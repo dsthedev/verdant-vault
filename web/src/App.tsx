@@ -6,9 +6,11 @@ import { RedwoodApolloProvider } from '@cedarjs/web/apollo'
 import FatalErrorPage from 'src/pages/FatalErrorPage'
 
 import { AuthProvider, useAuth } from './auth.js'
+import { ThemeProvider } from './components/ui/theme-provider'
+import { TooltipProvider } from './components/ui/tooltip.jsx'
 
 import './index.css'
-import './scaffold.css'
+import './tw-scaffold.css'
 
 interface AppProps {
   children?: ReactNode
@@ -19,7 +21,9 @@ const App = ({ children }: AppProps) => (
     <RedwoodProvider titleTemplate="%PageTitle | %AppTitle">
       <AuthProvider>
         <RedwoodApolloProvider useAuth={useAuth}>
-          {children}
+          <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+            <TooltipProvider>{children}</TooltipProvider>
+          </ThemeProvider>
         </RedwoodApolloProvider>
       </AuthProvider>
     </RedwoodProvider>
