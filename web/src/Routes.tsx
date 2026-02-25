@@ -15,7 +15,7 @@ const Routes = () => {
           <Route path="/users/{id:Int}" page={UserUserPage} name="user" />
           <Route path="/users" page={UserUsersPage} name="users" />
         </Set>
-        <Set wrap={ScaffoldLayout} title="All Locations" titleTo="locations" buttonLabel="New" buttonTo="newLocation">
+        <Set wrap={ScaffoldLayout} title="All Locations" titleTo="locations" buttonLabel="New Location" buttonTo="newLocation">
           <Route path="/locations/new" page={LocationNewLocationPage} name="newLocation" />
           <Route path="/locations/{id}/edit" page={LocationEditLocationPage} name="editLocation" />
           {/* <Route path="/locations/{id}" page={LocationLocationPage} name="location" /> */}

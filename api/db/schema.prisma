@@ -27,10 +27,11 @@ model User {
 
   roles String @default("guest")
 
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  // plants    Plant[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   locations Location[]
+  plants    Plant[]
 }
 
 enum LocationType {
@@ -55,43 +56,68 @@ model Location {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // inventories          PlantInventory[]
-  // plantPurchases       PlantPurchase[]
-  // inventoryAuditsFrom  InventoryAudit[] @relation("FromLocation")
-  // inventoryAuditsTo    InventoryAudit[] @relation("ToLocation")
-  // transactionsFrom     InventoryTransaction[] @relation("FromLocation")
-  // transactionsTo       InventoryTransaction[] @relation("ToLocation")
-  // inventoryPresets     InventoryPreset[]
+  inventory Inventory[]
 }
 
 // enum PlantSize {
 //   SMALL
 //   MEDIUM
 //   LARGE
+//   HUGE
+// }
+
+// enum PlantStatus {
+//   MOTHER_PLANT
+//   GROWING
+//   REHAB
+//   DISCARDED
+//   PRE_SALE
+//   NEEDS_REPOT
+//   TO_PROPAGATE
+//   PROPAGATING
+//   READYFOR_SALE
+//   FOR_SALE
 // }
 
 // model Plant {
 //   id String @id @default(uuid())
 
-//   genus      String
-//   species    String
-//   otherNames String?
+//   name    String
+//   genus   String?
+//   species String?
 
 //   size PlantSize
 
-//   // Lineage
+//   // Lineage tracking
 //   parentPlantId String?
 //   parentPlant   Plant?  @relation("PlantLineage", fields: [parentPlantId], references: [id])
 //   children      Plant[] @relation("PlantLineage")
 
-//   createdById String?
-//   createdBy   User?   @relation(fields: [createdById], references: [id])
+//   createdById Int?
+//   createdBy   User? @relation(fields: [createdById], references: [id])
 
 //   createdAt DateTime @default(now())
 //   updatedAt DateTime @updatedAt
 
-//   // inventories           PlantInventory[]
-//   // purchases             PlantPurchase[]
-//   // audits                InventoryAudit[]
-//   // inventoryTransactions InventoryTransaction[]
+//   inventory Inventory[]
+// }
+
+// model Inventory {
+//   id String @id @default(uuid())
+
+//   plantId String
+//   plant   Plant  @relation(fields: [plantId], references: [id], onDelete: Cascade)
+
+//   locationId String
+//   location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+//   quantity Int         @default(0)
+//   status   PlantStatus @default(FOR_SALE)
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@unique([plantId, locationId])
+//   @@index([locationId])
+//   @@index([status])
 // }
