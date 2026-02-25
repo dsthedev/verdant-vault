@@ -22,7 +22,10 @@ const DefaultLayout = ({ children }: DefaultLayoutProps) => {
     { label: 'Login', to: routes.login() },
     { label: 'Signup', to: routes.signup() },
   ]
-  const userMenuItems = [{ label: 'Dashboard', to: routes.dashboard() }]
+  const userMenuItems = [
+    { label: 'Dashboard', to: routes.dashboard() },
+    { label: 'Locations', to: routes.locations() },
+  ]
 
   return (
     <>

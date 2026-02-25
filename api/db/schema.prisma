@@ -27,6 +27,71 @@ model User {
 
   roles String @default("guest")
 
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  // plants    Plant[]
+  locations Location[]
+}
+
+enum LocationType {
+  SHELF
+  BIN
+  BACKROOM
+  GREENHOUSE
+}
+
+model Location {
+  id String @id @default(uuid())
+
+  name        String
+  type        LocationType
+  description String?
+
+  isActive Boolean @default(true)
+
+  createdById Int
+  createdBy   User @relation(fields: [createdById], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // inventories          PlantInventory[]
+  // plantPurchases       PlantPurchase[]
+  // inventoryAuditsFrom  InventoryAudit[] @relation("FromLocation")
+  // inventoryAuditsTo    InventoryAudit[] @relation("ToLocation")
+  // transactionsFrom     InventoryTransaction[] @relation("FromLocation")
+  // transactionsTo       InventoryTransaction[] @relation("ToLocation")
+  // inventoryPresets     InventoryPreset[]
 }
+
+// enum PlantSize {
+//   SMALL
+//   MEDIUM
+//   LARGE
+// }
+
+// model Plant {
+//   id String @id @default(uuid())
+
+//   genus      String
+//   species    String
+//   otherNames String?
+
+//   size PlantSize
+
+//   // Lineage
+//   parentPlantId String?
+//   parentPlant   Plant?  @relation("PlantLineage", fields: [parentPlantId], references: [id])
+//   children      Plant[] @relation("PlantLineage")
+
+//   createdById String?
+//   createdBy   User?   @relation(fields: [createdById], references: [id])
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   // inventories           PlantInventory[]
+//   // purchases             PlantPurchase[]
+//   // audits                InventoryAudit[]
+//   // inventoryTransactions InventoryTransaction[]
+// }
