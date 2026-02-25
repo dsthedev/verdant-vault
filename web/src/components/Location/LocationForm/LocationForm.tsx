@@ -1,3 +1,6 @@
+import { useState } from 'react'
+
+import { Check, X } from 'lucide-react'
 import type { EditLocationById, UpdateLocationInput } from 'types/graphql'
 
 import type { RWGqlError } from '@cedarjs/forms'
@@ -7,11 +10,13 @@ import {
   FieldError,
   Label,
   TextField,
-  RadioField,
-  CheckboxField,
-  NumberField,
+  TextAreaField,
   Submit,
+  SelectField,
 } from '@cedarjs/forms'
+
+import { Button } from 'src/components/ui/button'
+import { Toggle } from 'src/components/ui/toggle'
 
 type FormLocation = NonNullable<EditLocationById['location']>
 
@@ -23,8 +28,10 @@ interface LocationFormProps {
 }
 
 const LocationForm = (props: LocationFormProps) => {
+  const [isActive, setIsActive] = useState(props.location?.isActive ?? true)
+
   const onSubmit = (data: FormLocation) => {
-    props.onSave(data, props?.location?.id)
+    props.onSave({ ...data, isActive }, props?.location?.id)
   }
 
   return (
@@ -37,81 +44,53 @@ const LocationForm = (props: LocationFormProps) => {
           listClassName="rw-form-error-list"
         />
 
-        <Label
-          name="name"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Name
-        </Label>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label
+              name="name"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Name
+            </Label>
 
-        <TextField
-          name="name"
-          defaultValue={props.location?.name}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: true }}
-        />
+            <TextField
+              name="name"
+              defaultValue={props.location?.name}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              validation={{ required: true }}
+            />
 
-        <FieldError name="name" className="rw-field-error" />
+            <FieldError name="name" className="rw-field-error" />
+          </div>
 
-        <Label
-          name="type"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Type
-        </Label>
+          <div>
+            <Label
+              name="type"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Type
+            </Label>
 
-        <div className="rw-check-radio-items">
-          <RadioField
-            id="location-type-0"
-            name="type"
-            defaultValue="SHELF"
-            defaultChecked={props.location?.type?.includes('SHELF')}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-          <div>Shelf</div>
+            <SelectField
+              name="type"
+              defaultValue={props.location?.type}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              validation={{ required: true }}
+            >
+              <option value="">Select a type</option>
+              <option value="SHELF">Shelf</option>
+              <option value="BIN">Bin</option>
+              <option value="BACKROOM">Backroom</option>
+              <option value="GREENHOUSE">Greenhouse</option>
+            </SelectField>
+
+            <FieldError name="type" className="rw-field-error" />
+          </div>
         </div>
-
-        <div className="rw-check-radio-items">
-          <RadioField
-            id="location-type-1"
-            name="type"
-            defaultValue="BIN"
-            defaultChecked={props.location?.type?.includes('BIN')}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-          <div>Bin</div>
-        </div>
-
-        <div className="rw-check-radio-items">
-          <RadioField
-            id="location-type-2"
-            name="type"
-            defaultValue="BACKROOM"
-            defaultChecked={props.location?.type?.includes('BACKROOM')}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-          <div>Backroom</div>
-        </div>
-
-        <div className="rw-check-radio-items">
-          <RadioField
-            id="location-type-3"
-            name="type"
-            defaultValue="GREENHOUSE"
-            defaultChecked={props.location?.type?.includes('GREENHOUSE')}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-          <div>Greenhouse</div>
-        </div>
-
-        <FieldError name="type" className="rw-field-error" />
 
         <Label
           name="description"
@@ -121,49 +100,36 @@ const LocationForm = (props: LocationFormProps) => {
           Description
         </Label>
 
-        <TextField
+        <TextAreaField
           name="description"
           defaultValue={props.location?.description}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
+          rows={4}
         />
 
         <FieldError name="description" className="rw-field-error" />
 
-        <Label
-          name="isActive"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Is active
-        </Label>
+        <div className="flex items-center gap-3">
+          <Label
+            name="isActive"
+            className="nrw-label m-0 hidden"
+            errorClassName="nrw-label rw-label-error m-0 hidden"
+          >
+            Active
+          </Label>
 
-        <CheckboxField
-          name="isActive"
-          defaultChecked={props.location?.isActive}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
+          <Toggle
+            pressed={isActive}
+            onPressedChange={setIsActive}
+            aria-label="Toggle active status"
+          >
+            {isActive ? <Check className="size-4" /> : <X className="size-4" />}
+            {`${isActive ? 'Active' : 'Inactive'}`}
+          </Toggle>
+        </div>
 
         <FieldError name="isActive" className="rw-field-error" />
-
-        <Label
-          name="createdById"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Created by id
-        </Label>
-
-        <NumberField
-          name="createdById"
-          defaultValue={props.location?.createdById}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: true }}
-        />
-
-        <FieldError name="createdById" className="rw-field-error" />
 
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">

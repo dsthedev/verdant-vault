@@ -28,7 +28,6 @@ export const schema = gql`
     type: LocationType!
     description: String
     isActive: Boolean!
-    createdById: Int!
   }
 
   input UpdateLocationInput {
@@ -36,7 +35,6 @@ export const schema = gql`
     type: LocationType
     description: String
     isActive: Boolean
-    createdById: Int
   }
 
   type Mutation {

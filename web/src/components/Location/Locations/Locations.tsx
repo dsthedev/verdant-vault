@@ -1,3 +1,4 @@
+import { Trash } from 'lucide-react'
 import type {
   DeleteLocationMutation,
   DeleteLocationMutationVariables,
@@ -53,7 +54,7 @@ const LocationsList = ({ locations }: FindLocations) => {
 
   const onDeleteClick = (location: (typeof locations)[0]) => {
     if (
-      confirm('Delete Location: ' + location.name + ' / ' + location.type + '?')
+      confirm('Delete Location: ' + location.name + ' (' + location.type + ')?')
     ) {
       deleteLocation({ variables: { id: location.id } })
     }
@@ -71,7 +72,7 @@ const LocationsList = ({ locations }: FindLocations) => {
   }) => (
     <Item key={location.id} variant={muted ? 'muted' : 'default'}>
       <ItemContent>
-        <ItemTitle className="flex items-center gap-2 text-xl">
+        <ItemTitle className="flex items-center gap-4 text-xl">
           {truncate(uppercaseFirst(location.name))}
           <Badge variant={getLocationTypeVariant(location.type)}>
             {formatEnum(location.type)}
@@ -82,7 +83,7 @@ const LocationsList = ({ locations }: FindLocations) => {
         </ItemDescription>
       </ItemContent>
       <ItemActions>
-        <Button asChild variant="blue" size="sm">
+        <Button asChild variant="blue">
           <Link
             to={routes.editLocation({ id: location.id })}
             title={'Edit location ' + location.id}
@@ -95,7 +96,7 @@ const LocationsList = ({ locations }: FindLocations) => {
           size="sm"
           onClick={() => onDeleteClick(location)}
         >
-          Delete
+          <Trash />
         </Button>
       </ItemActions>
     </Item>
@@ -103,11 +104,10 @@ const LocationsList = ({ locations }: FindLocations) => {
 
   return (
     <div className="space-y-8">
-      {/* Active Locations */}
       {activeLocations.length > 0 && (
         <div className="rw-segment">
-          <h2 className="text-lg font-semibold mb-4">Active Locations</h2>
-          <div className="space-y-2">
+          <h2 className="text-lg font-semibold mb-2">Active Locations</h2>
+          <div className="space-y-1">
             {activeLocations.map((location) => (
               <LocationItem key={location.id} location={location} />
             ))}
@@ -115,7 +115,6 @@ const LocationsList = ({ locations }: FindLocations) => {
         </div>
       )}
 
-      {/* Inactive Locations */}
       {inactiveLocations.length > 0 && (
         <div className="rw-segment">
           <h2 className="text-lg font-semibold mb-4">Inactive Locations</h2>

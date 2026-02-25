@@ -18,7 +18,7 @@ const Routes = () => {
         <Set wrap={ScaffoldLayout} title="All Locations" titleTo="locations" buttonLabel="New" buttonTo="newLocation">
           <Route path="/locations/new" page={LocationNewLocationPage} name="newLocation" />
           <Route path="/locations/{id}/edit" page={LocationEditLocationPage} name="editLocation" />
-          <Route path="/locations/{id}" page={LocationLocationPage} name="location" />
+          {/* <Route path="/locations/{id}" page={LocationLocationPage} name="location" /> */}
           <Route path="/locations" page={LocationLocationsPage} name="locations" />
         </Set>
 

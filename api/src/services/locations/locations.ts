@@ -4,15 +4,19 @@ import type {
   LocationRelationResolvers,
 } from 'types/graphql'
 
+import { context } from '@cedarjs/graphql-server'
+
 import { db } from 'src/lib/db'
 
 export const locations: QueryResolvers['locations'] = () => {
-  return db.location.findMany()
+  return db.location.findMany({
+    where: { createdById: context.currentUser?.id },
+  })
 }
 
 export const location: QueryResolvers['location'] = ({ id }) => {
   return db.location.findUnique({
-    where: { id },
+    where: { id, createdById: context.currentUser?.id },
   })
 }
 
@@ -20,7 +24,10 @@ export const createLocation: MutationResolvers['createLocation'] = ({
   input,
 }) => {
   return db.location.create({
-    data: input,
+    data: {
+      ...input,
+      createdById: context.currentUser?.id,
+    },
   })
 }
 
@@ -30,13 +37,13 @@ export const updateLocation: MutationResolvers['updateLocation'] = ({
 }) => {
   return db.location.update({
     data: input,
-    where: { id },
+    where: { id, createdById: context.currentUser?.id },
   })
 }
 
 export const deleteLocation: MutationResolvers['deleteLocation'] = ({ id }) => {
   return db.location.delete({
-    where: { id },
+    where: { id, createdById: context.currentUser?.id },
   })
 }
 
