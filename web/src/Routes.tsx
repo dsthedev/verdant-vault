@@ -8,7 +8,12 @@ import DefaultLayout from './layouts/DefaultLayout/DefaultLayout'
 const Routes = () => {
   return (
     <Router useAuth={useAuth}>
-      <PrivateSet wrap={DefaultLayout} unauthenticated="login" roles={['guest']}>
+      <PrivateSet wrap={DefaultLayout} unauthenticated="login" roles={['guest', 'admin']}>
+        <Route path="/feedbacks/new" page={FeedbackNewFeedbackPage} name="newFeedback" />
+        <Route path="/feedbacks/{id:Int}/edit" page={FeedbackEditFeedbackPage} name="editFeedback" />
+        {/* <Route path="/feedbacks/{id:Int}" page={FeedbackFeedbackPage} name="feedback" /> */}
+        <Route path="/feedbacks" page={FeedbackFeedbacksPage} name="feedbacks" />
+
         <Set wrap={ScaffoldLayout} title="Users" titleTo="users" buttonLabel="New User" buttonTo="newUser">
           <Route path="/users/new" page={UserNewUserPage} name="newUser" />
           <Route path="/users/{id:Int}/edit" page={UserEditUserPage} name="editUser" />

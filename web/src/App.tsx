@@ -12,6 +12,8 @@ import { TooltipProvider } from './components/ui/tooltip.jsx'
 import './index.css'
 import './tw-scaffold.css'
 
+import './tw-scaffold.css'
+
 interface AppProps {
   children?: ReactNode
 }

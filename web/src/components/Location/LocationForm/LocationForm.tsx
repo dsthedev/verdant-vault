@@ -17,6 +17,7 @@ import {
 
 import { Button } from 'src/components/ui/button'
 import { Toggle } from 'src/components/ui/toggle'
+import { cn } from 'src/lib/utils'
 
 type FormLocation = NonNullable<EditLocationById['location']>
 
@@ -132,9 +133,9 @@ const LocationForm = (props: LocationFormProps) => {
         <FieldError name="isActive" className="rw-field-error" />
 
         <div className="rw-button-group">
-          <Submit disabled={props.loading} className="rw-button rw-button-blue">
-            Save
-          </Submit>
+          <Button asChild variant="blue" size="xl" className={cn('my-3')}>
+            <Submit disabled={props.loading}>Save</Submit>
+          </Button>
         </div>
       </Form>
     </div>
